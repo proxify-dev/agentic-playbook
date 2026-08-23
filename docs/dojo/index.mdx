@@ -1,25 +1,51 @@
 ---
 title: "Dojo"
-description: "Hands-on exercises, downloadable skills, and guided builds."
+description: "Hands-on practice in your own editor, with a coach that walks you through it."
 ---
 
-<Info>
-  **Coming soon** — The Dojo is under construction. This is where you'll get hands-on with skills, agents, and the Proxify plugin.
-</Info>
+The Playbook is reference. The Dojo is action.
 
-## What's Coming
+## Before you start
 
-<CardGroup cols={2}>
-  <Card title="Plugin Install" icon="download">
-    One-command setup for the full Proxify skill and agent stack.
-  </Card>
-  <Card title="Skill Library" icon="books">
-    Browse and install production-ready skills for common workflows.
-  </Card>
-  <Card title="Guided Builds" icon="hammer">
-    Step-by-step exercises to build your own skills and agents.
-  </Card>
-  <Card title="Templates" icon="copy">
-    Starter templates for skills, agents, and hooks you can fork and customize.
-  </Card>
-</CardGroup>
+Four one-time installs:
+
+- [Claude Code](https://claude.com/claude-code)
+- [GitHub CLI](https://cli.github.com)
+- [VS Code](https://code.visualstudio.com)
+- [uv](https://docs.astral.sh/uv) — this is what runs the Dojo
+
+## Then run this
+
+```sh
+uvx proxify-dojo@latest
+```
+
+Press Enter and a coached VS Code instance launches. Everything follows naturally from there.
+
+The Coach takes over and walks you through it step by step — think of it as someone
+screen-sharing the exact setups, except it's live on your own machine and you get to
+interact with it.
+
+<Note>
+  It's built this way on purpose. The learning was never about grinding out a `CLAUDE.md`
+  from a blank page — it's in seeing the before and after, and making up your own mind.
+</Note>
+
+## What you'll work through
+
+**Context Engineering** — seven challenges, roughly ten minutes each. Each one ships a real
+artifact you keep, and the next builds on it. The `CLAUDE.md` you write first is still
+load-bearing at the end.
+
+| # | Challenge | What you'll take away |
+|---|---|---|
+| 1 | **Where a rule lives** | Instructions load in a stack by scope. A nested file never reaches up, so a rule belongs at the cheapest scope that still reaches it. |
+| 2 | **What earns a slot** | Every always-loaded line is paid on every message. Keep only what Claude can't work out alone — the usual failure is too much, not too little. |
+| 3 | **Depth costs the same as a rule** | An `@import` pulls a whole file into every message. Depth belongs behind a pointer, followed only when the task needs it. |
+| 4 | **Tell it when to look** | A pointer has to say *when* to follow it — that's what turns a broad hunt into one directed read. |
+| 5 | **Give it a structure, it fills it** | Seed a memory file's shape and one reminder line; the agent maintains it unprompted. You architect the memory, it does the filling. |
+| 6 | **So it remembers next session** | A memory file isn't memory until it's injected. Without the import, your notes are a file nobody opens. |
+| 7 | **The same correction, third time** | A repeated correction is a config bug. Home the fix at the right scope — and know a rule can lose to what the codebase demonstrates. |
+
+Your work is proven by a **fresh** Claude session that never saw your conversation. That
+matters: config that works because you just explained it in chat isn't config that works.

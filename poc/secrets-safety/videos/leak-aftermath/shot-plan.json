@@ -27,9 +27,9 @@
   "content": {
     "dominant_motif": "One secret becoming copies you can't recall: the rose CANARY_ENV_7f3a9c chip is copied, never moved.",
     "sources": {
-      "tip": "ARTICLE.md 'Why this matters' Tip: once in context it is on the wire to the model provider and saved in plain text in local session history; rotating the key is then the only fix.",
-      "table": "ARTICLE.md 'What Each Layer Does NOT Cover', last row: saved in plain text in ~/.claude/projects/ (all 6 runs with session saving on).",
-      "warning": "ARTICLE.md 'Plan type' Warning: Team, Enterprise and API keep data 30 days by default; Free, Pro and Max keep it 5 years if you allow your data to improve models, 30 days if you don't; local session files kept 30 days by default (cleanupPeriodDays).",
+      "tip": "docs/setup/secrets-safety.mdx 'Why this matters' Tip: once in context it is on the wire to the model provider and saved in plain text in local session history; rotating the key is then the only fix.",
+      "table": "docs/setup/secrets-safety.mdx 'What Each Layer Does NOT Cover', last row: saved in plain text in ~/.claude/projects/ (all 6 runs with session saving on).",
+      "warning": "docs/setup/secrets-safety.mdx 'Plan type' Warning: Team, Enterprise and API keep data 30 days by default; Free, Pro and Max keep it 5 years if you allow your data to improve models, 30 days if you don't; local session files kept 30 days by default (cleanupPeriodDays).",
       "env_var": "toy-project/.env: PAYMENTS_API_KEY holds CANARY_ENV_7f3a9c."
     },
     "scenes": [

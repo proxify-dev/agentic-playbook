@@ -7,10 +7,11 @@ export const ScrollVideo = ({ src, alt, loop = false }) => {
 
   React.useEffect(() => {
     const html = document.documentElement;
-    const check = () => setIsLight(html.style.colorScheme !== 'dark');
+    // Mintlify marks the theme with a `dark` / `light` class on <html>; older builds set color-scheme instead.
+    const check = () => setIsLight(!html.classList.contains('dark') && html.style.colorScheme !== 'dark');
     check();
     const obs = new MutationObserver(check);
-    obs.observe(html, { attributes: true, attributeFilter: ['style'] });
+    obs.observe(html, { attributes: true, attributeFilter: ['class', 'style'] });
     return () => obs.disconnect();
   }, []);
 

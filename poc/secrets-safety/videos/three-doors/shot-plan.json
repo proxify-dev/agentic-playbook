@@ -14,7 +14,7 @@
   "brief": "Three horizontal lanes ('doors') run from a secrets card (.env holding the rose canary CANARY_ENV_7f3a9c, plus the env var APP_API_TOKEN) to a 'Claude's context' card. Rose canary packets flow through all three lanes and each lane's context slot reads LEAKED; the context card tints rose. One mint gate per lane then snaps shut in turn: permissions.deny Read(...) on Claude's file tools (Read .env, cat .env), sandbox.filesystem.denyRead on any shell command (python script.py, grep -r .), and, after a pattern interrupt that isolates the still-leaking environment lane ('the door nobody closes'), sandbox.credentials on environment variables (printenv, env). Packets that reach a closed gate stop and fade; the slot flips to HELD. The piece ends calm and indigo on 'You need all three.' with all three layer names readable. Dominant motif: gates snapping shut, one per lane.",
   "content": {
     "type": "flow-diagram",
-    "source": "ARTICLE.md, The Results table + The Minimal Config",
+    "source": "docs/setup/secrets-safety.mdx, The Results table + The Minimal Config",
     "secret_card": { "file": ".env", "canary": "CANARY_ENV_7f3a9c", "env_var": "APP_API_TOKEN" },
     "lanes": [
       { "id": "lane-1", "name": "Claude's file tools", "routes": ["Read .env", "cat .env"], "packet": "7f3a9c", "gate": { "layer": 1, "label": "permissions.deny Read(...)", "close_s": 3.0 } },

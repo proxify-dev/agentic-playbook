@@ -1,8 +1,8 @@
 # Secrets-safety animations — shared design spec
 
-Four short, unnarrated motion graphics for the blog article `../ARTICLE.md`
+Four short, unnarrated motion graphics for the docs page `docs/setup/secrets-safety.mdx`
 ("Keeping Secrets Out of Claude's Context"). Every fact shown must be true to
-`../ARTICLE.md` / `../RESULTS.md`. Never invent a number.
+that page / `../RESULTS.md`. Never invent a number.
 
 ## Where they play
 

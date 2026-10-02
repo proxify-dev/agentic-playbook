@@ -1,0 +1,1 @@
+{"sandbox": {"network": {"tlsTerminate": {}}, "credentials": {"envVars": [{"name": "APP_API_TOKEN", "mode": "mask"}]}}}

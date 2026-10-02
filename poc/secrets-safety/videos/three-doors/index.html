@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, height=680">
+    <title>Three Doors</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-500.woff2") format("woff2"); font-weight: 500; font-style: normal; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-600.woff2") format("woff2"); font-weight: 600; font-style: normal; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-800.woff2") format("woff2"); font-weight: 800; font-style: normal; }
+      @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/jbmono-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/jbmono-500.woff2") format("woff2"); font-weight: 500; font-style: normal; }
+      @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/jbmono-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+
+      :root {
+        --surface: #0e0e28;
+        --surface-raised: #161640;
+        --border: #1e1e4a;
+        --indigo: #5258fb;
+        --indigo-border: #5258fb66;
+        --lavender: #d5d5fe;
+        --mint: #4eeeb0;
+        --mint-soft: #4eeeb026;
+        --mint-border: #4eeeb080;
+        --rose: #f06292;
+        --rose-soft: #f0629229;
+        --rose-border: #f06292b3;
+        --text-primary: #e4e4f0;
+        --text-secondary: #8b8dc0;
+        --text-muted: #4e5088;
+        --mono: "JetBrains Mono", ui-monospace, monospace;
+        --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1200px;
+        height: 680px;
+        overflow: hidden;
+        background: transparent;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent;
+        font-family: var(--sans);
+        color: var(--text-primary);
+        -webkit-font-smoothing: antialiased;
+      }
+      .stage { position: absolute; inset: 0; }
+
+      .scene-content {
+        width: 100%;
+        height: 100%;
+        padding: 38px 56px 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ---------- header ---------- */
+      .header { height: 92px; }
+      .title {
+        font-size: 36px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 44px;
+        color: var(--text-primary);
+      }
+      .subtitle {
+        margin-top: 4px;
+        font-size: 22px;
+        font-weight: 400;
+        line-height: 28px;
+        color: var(--text-secondary);
+      }
+
+      /* ---------- diagram ---------- */
+      .diagram {
+        margin-top: 18px;
+        height: 388px;
+        display: grid;
+        grid-template-columns: 232px 594px 226px;
+        column-gap: 18px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+      }
+
+      /* secrets card */
+      .secrets {
+        position: relative;
+        display: grid;
+        grid-template-rows: 254px 120px;
+        row-gap: 14px;
+        padding: 0 14px;
+      }
+      .secrets-eyebrow {
+        position: absolute;
+        top: 14px;
+        left: 16px;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+      }
+      .secret-group {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 38px;
+        gap: 10px;
+      }
+      .secret-group.file { padding-top: 105px; }
+      .secret-kind {
+        font-family: var(--mono);
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 26px;
+        color: var(--text-primary);
+      }
+      .secret-kind.sans { font-family: var(--sans); font-weight: 600; }
+      .canary {
+        display: block;
+        width: 200px;
+        font-family: var(--mono);
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 30px;
+        text-align: center;
+        color: var(--rose);
+        background: var(--rose-soft);
+        border: 1px solid var(--rose-border);
+        border-radius: 7px;
+      }
+      .canary.env { width: 160px; }
+
+      /* lanes */
+      .lanes {
+        display: grid;
+        grid-template-rows: repeat(3, 120px);
+        row-gap: 14px;
+      }
+      .lane {
+        padding: 10px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .lane-head {
+        height: 28px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .lane-name {
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 28px;
+        color: var(--text-primary);
+        margin-right: 6px;
+        white-space: nowrap;
+      }
+      .route {
+        font-family: var(--mono);
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 24px;
+        padding: 0 8px;
+        color: var(--lavender);
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        white-space: nowrap;
+      }
+      .track-wrap {
+        position: relative;
+        height: 40px;
+      }
+      .track {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+      .track-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 19px;
+        height: 2px;
+        background: repeating-linear-gradient(90deg, var(--text-muted) 0 8px, transparent 8px 14px);
+      }
+      .packet {
+        position: absolute;
+        opacity: 0;
+        visibility: hidden;
+        top: 4px;
+        left: 0;
+        width: 84px;
+        height: 32px;
+        font-family: var(--mono);
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 30px;
+        text-align: center;
+        color: var(--rose);
+        background: #1f0f2c;
+        border: 1px solid var(--rose-border);
+        border-radius: 7px;
+        white-space: nowrap;
+      }
+      .packet.long { width: 160px; }
+      .door-frame {
+        position: absolute;
+        left: 397px;
+        top: -4px;
+        width: 14px;
+        height: 48px;
+        border-radius: 6px;
+        border: 1.5px dashed var(--text-muted);
+      }
+      .gate {
+        position: absolute;
+        left: 400px;
+        top: -4px;
+        width: 8px;
+        height: 48px;
+        border-radius: 4px;
+        background: var(--mint);
+        box-shadow: 0 0 14px #4eeeb080;
+        transform-origin: 50% 0%;
+      }
+      .gate-glow {
+        position: absolute;
+        left: 386px;
+        top: -6px;
+        width: 36px;
+        height: 52px;
+        border-radius: 12px;
+        background: radial-gradient(closest-side, #4eeeb066, #4eeeb000);
+        opacity: 0;
+      }
+      .gate-label {
+        height: 24px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        opacity: 0;
+        visibility: hidden;
+      }
+      .layer-tag {
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 24px;
+        color: var(--text-secondary);
+      }
+      .layer-key {
+        font-family: var(--mono);
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 24px;
+        color: var(--mint);
+      }
+
+      /* context card */
+      .context {
+        position: relative;
+        display: grid;
+        grid-template-rows: repeat(3, 120px);
+        row-gap: 14px;
+        border-color: var(--indigo-border);
+      }
+      .context-title {
+        position: absolute;
+        top: 12px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 28px;
+        color: var(--lavender);
+      }
+      .ctx-row { position: relative; }
+      .slot {
+        position: absolute;
+        top: 71px;
+        left: 26px;
+        width: 170px;
+        height: 38px;
+        border-radius: 9px;
+        border: 1.5px dashed var(--text-muted);
+      }
+      .slot-glow {
+        position: absolute;
+        inset: -6px;
+        border-radius: 13px;
+        box-shadow: 0 0 22px #f06292aa;
+        opacity: 0;
+      }
+      .slot-state {
+        position: absolute;
+        inset: -1.5px;
+        border-radius: 9px;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        line-height: 35px;
+        text-align: center;
+        opacity: 0;
+        visibility: hidden;
+      }
+      .slot-state.leaked { color: var(--rose); background: var(--rose-soft); border: 1.5px solid var(--rose-border); }
+      .slot-state.held { color: var(--mint); background: var(--mint-soft); border: 1.5px solid var(--mint-border); }
+
+      /* ---------- footer captions ---------- */
+      .footer {
+        position: relative;
+        margin-top: 26px;
+        height: 56px;
+      }
+      .caption {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 32px;
+        color: var(--text-secondary);
+        text-align: center;
+        opacity: 0;
+        visibility: hidden;
+      }
+      .caption b { font-weight: 700; }
+      .caption .k-rose { color: var(--rose); }
+      .caption .k-mint { color: var(--mint); }
+      .caption code { font-family: var(--mono); font-size: 22px; color: var(--mint); }
+      .caption.final { font-size: 32px; font-weight: 700; line-height: 40px; color: var(--text-primary); }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-kuqx" id="root" data-composition-id="main" data-start="0" data-duration="11.5" data-fps="30" data-width="1200" data-height="680">
+      <section data-hf-id="hf-0z30" id="scene" class="stage">
+        <div data-hf-id="hf-cn5c" class="scene-content">
+          <header data-hf-id="hf-hr6f" class="header">
+            <h1 data-hf-id="hf-t1w1" id="title" class="title">Each layer closes a different door</h1>
+            <p data-hf-id="hf-f8pc" id="subtitle" class="subtitle">Three routes from your secret to Claude's context</p>
+          </header>
+
+          <div data-hf-id="hf-yk1z" class="diagram">
+            <!-- secrets -->
+            <div data-hf-id="hf-frjq" id="secrets" class="card secrets">
+              <div data-hf-id="hf-c123" class="secrets-eyebrow">Your secrets</div>
+              <div data-hf-id="hf-35g0" class="secret-group file">
+                <div data-hf-id="hf-aavu" class="secret-kind">.env</div>
+                <div data-hf-id="hf-ksm4" class="canary">CANARY_ENV_7f3a9c</div>
+              </div>
+              <div data-hf-id="hf-xf6e" class="secret-group">
+                <div data-hf-id="hf-1ph5" class="secret-kind sans">Env variable</div>
+                <div data-hf-id="hf-m9t5" class="canary env">APP_API_TOKEN</div>
+              </div>
+            </div>
+
+            <!-- lanes -->
+            <div data-hf-id="hf-gdyh" class="lanes">
+              <div data-hf-id="hf-dwjq" id="lane-1" class="card lane">
+                <div data-hf-id="hf-15ll" class="lane-head">
+                  <span data-hf-id="hf-jeiq" class="lane-name">Claude's file tools</span>
+                  <span data-hf-id="hf-i85p" class="route">Read .env</span>
+                  <span data-hf-id="hf-ei6l" class="route">cat .env</span>
+                </div>
+                <div data-hf-id="hf-dqbm" class="gate-label" id="label-1">
+                  <span data-hf-id="hf-8jo3" class="layer-tag">Layer 1</span>
+                  <span data-hf-id="hf-vgkn" class="layer-key">permissions.deny Read(...)</span>
+                </div>
+                <div data-hf-id="hf-t0ae" class="track-wrap">
+                  <div data-hf-id="hf-3vp9" class="track" id="track-1" data-layout-allow-overflow="true"><div data-hf-id="hf-xtz0" class="track-line"></div></div>
+                  <div data-hf-id="hf-g3pw" class="door-frame"></div>
+                  <div data-hf-id="hf-u2da" class="gate-glow" id="glow-1"></div>
+                  <div data-hf-id="hf-5a58" class="gate" id="gate-1"></div>
+                </div>
+              </div>
+
+              <div data-hf-id="hf-9yfp" id="lane-2" class="card lane">
+                <div data-hf-id="hf-cdpp" class="lane-head">
+                  <span data-hf-id="hf-dn2y" class="lane-name">Any shell command</span>
+                  <span data-hf-id="hf-j9dm" class="route">python script.py</span>
+                  <span data-hf-id="hf-roql" class="route">grep -r .</span>
+                </div>
+                <div data-hf-id="hf-9s7l" class="gate-label" id="label-2">
+                  <span data-hf-id="hf-85d2" class="layer-tag">Layer 2</span>
+                  <span data-hf-id="hf-nole" class="layer-key">sandbox.filesystem.denyRead</span>
+                </div>
+                <div data-hf-id="hf-05y2" class="track-wrap">
+                  <div data-hf-id="hf-7tta" class="track" id="track-2" data-layout-allow-overflow="true"><div data-hf-id="hf-t3lg" class="track-line"></div></div>
+                  <div data-hf-id="hf-v27g" class="door-frame"></div>
+                  <div data-hf-id="hf-q499" class="gate-glow" id="glow-2"></div>
+                  <div data-hf-id="hf-dy13" class="gate" id="gate-2"></div>
+                </div>
+              </div>
+
+              <div data-hf-id="hf-96rw" id="lane-3" class="card lane">
+                <div data-hf-id="hf-dkms" class="lane-head">
+                  <span data-hf-id="hf-1k4v" class="lane-name">Environment variables</span>
+                  <span data-hf-id="hf-2b9q" class="route">printenv</span>
+                  <span data-hf-id="hf-2aiz" class="route">env</span>
+                </div>
+                <div data-hf-id="hf-90js" class="gate-label" id="label-3">
+                  <span data-hf-id="hf-7r21" class="layer-tag">Layer 3</span>
+                  <span data-hf-id="hf-4kr9" class="layer-key">sandbox.credentials</span>
+                </div>
+                <div data-hf-id="hf-0k93" class="track-wrap">
+                  <div data-hf-id="hf-brxb" class="track" id="track-3" data-layout-allow-overflow="true"><div data-hf-id="hf-rwod" class="track-line"></div></div>
+                  <div data-hf-id="hf-tvad" class="door-frame"></div>
+                  <div data-hf-id="hf-pclg" class="gate-glow" id="glow-3"></div>
+                  <div data-hf-id="hf-9zx2" class="gate" id="gate-3"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- context -->
+            <div data-hf-id="hf-p42u" id="context" class="card context">
+              <div data-hf-id="hf-bxdn" class="context-title">Claude's context</div>
+              <div data-hf-id="hf-pwkc" class="ctx-row"><div data-hf-id="hf-wm64" class="slot" id="slot-1"><div data-hf-id="hf-e4vy" class="slot-glow" id="sglow-1"></div><div data-hf-id="hf-ru03" class="slot-state leaked" id="leak-1" data-layout-allow-overlap="true">LEAKED</div><div data-hf-id="hf-gqfr" class="slot-state held" id="held-1" data-layout-allow-overlap="true">HELD</div></div></div>
+              <div data-hf-id="hf-u42c" class="ctx-row"><div data-hf-id="hf-5a1z" class="slot" id="slot-2"><div data-hf-id="hf-a6rx" class="slot-glow" id="sglow-2"></div><div data-hf-id="hf-u6n0" class="slot-state leaked" id="leak-2" data-layout-allow-overlap="true">LEAKED</div><div data-hf-id="hf-jyi4" class="slot-state held" id="held-2" data-layout-allow-overlap="true">HELD</div></div></div>
+              <div data-hf-id="hf-sx59" class="ctx-row"><div data-hf-id="hf-1bxy" class="slot" id="slot-3"><div data-hf-id="hf-9f44" class="slot-glow" id="sglow-3"></div><div data-hf-id="hf-pud5" class="slot-state leaked" id="leak-3" data-layout-allow-overlap="true">LEAKED</div><div data-hf-id="hf-inl5" class="slot-state held" id="held-3" data-layout-allow-overlap="true">HELD</div></div></div>
+            </div>
+          </div>
+
+          <footer data-hf-id="hf-vadb" class="footer">
+            <div data-hf-id="hf-r46y" class="caption" id="cap-1"><span data-hf-id="hf-cuf5">No protection:&#160;<b data-hf-id="hf-7mit" class="k-rose">every door leaks.</b></span></div>
+            <div data-hf-id="hf-n62x" class="caption" id="cap-2"><span data-hf-id="hf-j2jy"><b data-hf-id="hf-6vah">Layer 1:</b> deny rules stop the Read tool and <b data-hf-id="hf-c207" class="k-mint">cat</b>.</span></div>
+            <div data-hf-id="hf-k6tc" class="caption" id="cap-3"><span data-hf-id="hf-3c4g"><b data-hf-id="hf-d2m6">Layer 2:</b> the sandbox stops <b data-hf-id="hf-abfv" class="k-mint">every shell command</b>.</span></div>
+            <div data-hf-id="hf-g8pb" class="caption" id="cap-4"><span data-hf-id="hf-p4t6"><b data-hf-id="hf-oa54" class="k-rose">The environment:</b> the door nobody closes.</span></div>
+            <div data-hf-id="hf-cala" class="caption" id="cap-5"><span data-hf-id="hf-9pez"><b data-hf-id="hf-0kaj">Layer 3:</b>&#160;<code data-hf-id="hf-30db">sandbox.credentials</code>&#160;hides the variable.</span></div>
+            <div data-hf-id="hf-r0lx" class="caption final" id="cap-6"><span data-hf-id="hf-3pjq">You need <span data-hf-id="hf-p4nc" class="k-mint">all three</span>.</span></div>
+          </footer>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      (function () {
+        const C = {
+          surface: "#0e0e28",
+          border: "#1e1e4a",
+          indigoBorder: "rgba(82, 88, 251, 0.4)",
+          mintBorder: "rgba(78, 238, 176, 0.5)",
+          rose: "rgba(240, 98, 146, 0.85)",
+          roseFill: "rgba(240, 98, 146, 0.08)",
+          surfaceFill: "rgba(14, 14, 40, 1)",
+        };
+
+        // ---- deterministic packet schedule ----
+        const V = 400;            // px per second
+        const PERIOD = 1.0;       // one packet per lane per second
+        const LAST_SPAWN = 8.0;   // nothing new after this, so the end is a still hold
+        const GATE_X = 400;       // gate left edge inside the track (matches CSS)
+        const GATE_W = 8;
+        const GATE_DROP = 0.25;
+        const lanes = [
+          { i: 1, start: 0.5, gate: 3.0, text: "7f3a9c", w: 84, cls: "" },
+          { i: 2, start: 0.7, gate: 5.1, text: "7f3a9c", w: 84, cls: "" },
+          { i: 3, start: 0.9, gate: 7.5, text: "APP_API_TOKEN", w: 160, cls: "long" },
+        ];
+
+        const tl = gsap.timeline({ paused: true });
+
+        // ---- build-in ----
+        tl.fromTo("#title", { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0);
+        tl.fromTo("#subtitle", { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+        tl.fromTo("#secrets", { autoAlpha: 0, x: -16 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: "power3.out" }, 0.15);
+        tl.fromTo(["#lane-1", "#lane-2", "#lane-3"], { autoAlpha: 0, x: -16 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: "power3.out", stagger: 0.1 }, 0.25);
+        tl.fromTo("#context", { autoAlpha: 0, x: 16 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: "power3.out" }, 0.45);
+
+        // ---- captions ----
+        const caps = [
+          ["#cap-1", 1.0, 2.85],
+          ["#cap-2", 3.1, 4.95],
+          ["#cap-3", 5.2, 6.0],
+          ["#cap-4", 6.2, 7.3],
+          ["#cap-5", 7.55, 8.45],
+          ["#cap-6", 8.7, null],
+        ];
+        caps.forEach(([sel, inT, outT]) => {
+          tl.fromTo(sel, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" }, inT);
+          if (outT !== null) tl.to(sel, { autoAlpha: 0, y: -6, duration: 0.2, ease: "power2.in" }, outT);
+        });
+
+        // ---- packets, gates, slots ----
+        let firstLeakAny = Infinity;
+        let lastHeldFlip = 0;
+
+        lanes.forEach((L) => {
+          const track = document.getElementById("track-" + L.i);
+          const trackW = track.clientWidth;
+          const stopX = GATE_X - 4 - L.w;               // packet right edge just short of the gate
+          const tLead = (GATE_X - 4) / V;               // leading edge reaches the gate
+          const tTrail = (GATE_X + GATE_W + 2 + L.w) / V; // trailing edge clears the gate
+          const tArrive = trackW / V;                   // leading edge reaches the context side
+          const tExit = (trackW + L.w) / V;             // fully out of the track
+
+          let firstLeak = Infinity;
+          let lastLeakArrive = 0;
+          let k = 0;
+          for (let s = L.start; s <= LAST_SPAWN + 1e-6; s = L.start + ++k * PERIOD) {
+            const p = document.createElement("div");
+            p.className = "packet " + L.cls;
+            p.id = "pk-" + L.i + "-" + k;
+            p.setAttribute("data-layout-allow-occlusion", "true"); // clipped by the track edge on entry and exit
+            p.textContent = L.text;
+            track.appendChild(p);
+
+            const leaks = s + tTrail <= L.gate;
+            // parked packets stay hidden; each one is only visible while it travels
+            tl.set(p, { autoAlpha: 1 }, s);
+            if (leaks) {
+              tl.fromTo(p, { x: -L.w }, { x: trackW, duration: tExit, ease: "none" }, s);
+              tl.set(p, { autoAlpha: 0 }, s + tExit);
+              const arr = s + tArrive;
+              firstLeak = Math.min(firstLeak, arr);
+              lastLeakArrive = Math.max(lastLeakArrive, arr);
+              // each arrival flashes the context slot
+              tl.to("#sglow-" + L.i, { opacity: 1, duration: 0.08, ease: "none" }, arr);
+              tl.to("#sglow-" + L.i, { opacity: 0, duration: 0.4, ease: "power2.out" }, arr + 0.08);
+            } else {
+              if (s + tLead < L.gate + GATE_DROP) {
+                // would straddle the gate while it drops; schedule is tuned so this never happens
+                console.warn("packet straddles gate", L.i, s);
+              }
+              tl.fromTo(p, { x: -L.w }, { x: stopX, duration: tLead, ease: "none" }, s);
+              const hit = s + tLead;
+              tl.to(p, { x: stopX - 8, autoAlpha: 0, duration: 0.35, ease: "power2.out" }, hit);
+              tl.to("#glow-" + L.i, { opacity: 1, duration: 0.06, ease: "none" }, hit);
+              tl.to("#glow-" + L.i, { opacity: 0, duration: 0.35, ease: "power2.out" }, hit + 0.06);
+            }
+          }
+
+          // first leak: slot reads LEAKED
+          tl.fromTo("#leak-" + L.i, { autoAlpha: 0, scale: 0.8 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(1.6)" }, firstLeak);
+          firstLeakAny = Math.min(firstLeakAny, firstLeak);
+
+          // gate snaps shut
+          tl.fromTo("#gate-" + L.i, { scaleY: 0 }, { scaleY: 1, duration: GATE_DROP, ease: "back.out(1.6)" }, L.gate);
+          tl.to(document.querySelector("#lane-" + L.i + " .door-frame"), { opacity: 0, duration: 0.2, ease: "power2.out" }, L.gate + 0.2);
+          tl.fromTo("#label-" + L.i, { autoAlpha: 0, x: 10 }, { autoAlpha: 1, x: 0, duration: 0.35, ease: "power3.out" }, L.gate + 0.1);
+          tl.to("#lane-" + L.i, { borderColor: C.mintBorder, duration: 0.35, ease: "power2.out" }, L.gate + 0.15);
+
+          // slot flips to HELD once the last in-flight leak has landed
+          const flip = Math.max(L.gate + 0.35, lastLeakArrive + 0.3);
+          lastHeldFlip = Math.max(lastHeldFlip, flip);
+          tl.to("#leak-" + L.i, { autoAlpha: 0, scale: 0.9, duration: 0.2, ease: "power2.in" }, flip);
+          tl.fromTo("#held-" + L.i, { autoAlpha: 0, scale: 0.8 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(1.6)" }, flip + 0.2);
+          tl.to("#slot-" + L.i, { borderColor: "rgba(78, 238, 176, 0)", duration: 0.2 }, flip);
+        });
+
+        // the context card tints rose while anything leaks, then calms
+        tl.to("#context", { borderColor: C.rose, backgroundColor: "#1a1030", duration: 0.4, ease: "power2.out" }, firstLeakAny);
+        tl.to("#context", { borderColor: C.indigoBorder, backgroundColor: C.surface, duration: 0.6, ease: "power2.inOut" }, lastHeldFlip + 0.15);
+
+        // ---- pattern interrupt: only the environment lane still leaks ----
+        tl.to(["#lane-1", "#lane-2"], { opacity: 0.45, duration: 0.35, ease: "power2.out" }, 6.2);
+        tl.to("#lane-3", { borderColor: C.rose, boxShadow: "0 0 26px rgba(240, 98, 146, 0.35)", duration: 0.35, ease: "power2.out" }, 6.2);
+        tl.to(["#lane-1", "#lane-2"], { opacity: 1, duration: 0.4, ease: "power2.out" }, 7.6);
+        tl.to("#lane-3", { boxShadow: "0 0 0px rgba(240, 98, 146, 0)", duration: 0.4, ease: "power2.out" }, 7.6);
+
+        window.__timelines["main"] = tl;
+        tl.seek(0);
+      })();
+    </script>
+  </body>
+</html>

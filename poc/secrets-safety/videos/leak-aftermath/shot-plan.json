@@ -1,0 +1,79 @@
+{
+  "category": "kinetic-type",
+  "duration_s": 11,
+  "fps": 30,
+  "canvas": { "w": 1200, "h": 680, "aspect": "30:17" },
+  "style": "Calm, precise, technical diagram on a transparent background. Cards, dashed connectors and one rose canary chip that keeps becoming copies. Matches the Remotion house set (docs/videos/*.webm).",
+  "palette": {
+    "surface": "#0E0E28",
+    "surfaceRaised": "#161640",
+    "border": "#1E1E4A",
+    "indigo": "#5258FB",
+    "lavender": "#D5D5FE",
+    "mint": "#4EEEB0",
+    "amber": "#E8965A",
+    "rose": "#F06292",
+    "textPrimary": "#E4E4F0",
+    "textSecondary": "#8B8DC0"
+  },
+  "font": "Inter 400-800 + JetBrains Mono 400-700 (local woff2 in assets/fonts)",
+  "beats": [0.0, 1.3, 2.3, 2.6, 3.1, 4.3, 5.1, 6.6, 7.0, 7.6, 8.2, 11.0],
+  "export": "alpha-overlay",
+  "asset_needs": [],
+  "block": null,
+  "customize": {
+    "note": "Hand-authored diagram: the closest form category is kinetic-type (text callouts are the payload), but the motif is a chip copied along connectors, which no catalog block covers. Catalog searched for 'dashed connector line with a chip travelling along it' (no fit) and 'typewriter code line typing in' (code-typing is a full 1920x1080 code block; a 43-char line is a per-char reveal instead)."
+  },
+  "content": {
+    "dominant_motif": "One secret becoming copies you can't recall: the rose CANARY_ENV_7f3a9c chip is copied, never moved.",
+    "sources": {
+      "tip": "ARTICLE.md 'Why this matters' Tip: once in context it is on the wire to the model provider and saved in plain text in local session history; rotating the key is then the only fix.",
+      "table": "ARTICLE.md 'What Each Layer Does NOT Cover', last row: saved in plain text in ~/.claude/projects/ (all 6 runs with session saving on).",
+      "warning": "ARTICLE.md 'Plan type' Warning: Team, Enterprise and API keep data 30 days by default; Free, Pro and Max keep it 5 years if you allow your data to improve models, 30 days if you don't; local session files kept 30 days by default (cleanupPeriodDays).",
+      "env_var": "toy-project/.env: PAYMENTS_API_KEY holds CANARY_ENV_7f3a9c."
+    },
+    "scenes": [
+      {
+        "id": "s1-in-context",
+        "start": 0,
+        "end": 2.5,
+        "text": "Title 'Once it's in context, it's out' + subtitle. A .env card (PAYMENTS_API_KEY=CANARY_ENV_7f3a9c); a copy of the rose chip lifts out and lands in the indigo 'Claude's context' box.",
+        "emphasis_words": ["CANARY_ENV_7f3a9c"],
+        "emotion": "calm, clinical",
+        "motion": "fade_in cards; chip lift (y -22) then arc into context slot, power3.out; context border pulses lavender on landing",
+        "beats": [1.3, 2.3]
+      },
+      {
+        "id": "s2-copies",
+        "start": 2.5,
+        "end": 6.6,
+        "text": "Two copies leave at once. Right: dashed 'on the wire' line to 'Model provider'; retention tag 'Team / Enterprise / API: 30 days' and 'Free / Pro / Max: 30 days, or 5 years if shared for training'. Down: 'saved to disk' line to ~/.claude/projects/…/session.jsonl; a JSON line types in with the canary in rose; tag 'plain text · kept 30 days'.",
+        "emphasis_words": ["30 days", "5 years", "plain text"],
+        "emotion": "quiet dread",
+        "motion": "connectors draw (scaleX / scaleY); chip copies travel along them simultaneously; per-char typewriter; tag lines stagger 0.1s",
+        "beats": [2.6, 3.1, 4.3, 5.1]
+      },
+      {
+        "id": "s3-rotate",
+        "start": 6.6,
+        "end": 11,
+        "text": "Pattern interrupt: everything but the .env card dims to 0.3; the .env card turns mint, a rotate icon spins once, the key becomes 'rotated'. Takeaway 'Only fix: rotate the key.' (mint, 44px) + 'Prevention beats cleanup — block it before it's read.' Hold ≥ 2.8s with both copies still visible but dimmed.",
+        "emphasis_words": ["rotate the key"],
+        "emotion": "resolve",
+        "motion": "dim fade 0.5s power2.out; rotate icon 360° power2.inOut; chip swap; takeaway slide_bottom 16px power3.out",
+        "beats": [6.6, 7.0, 7.6, 8.2]
+      }
+    ],
+    "layout": {
+      "title": [80, 48],
+      "env_card": [80, 150, 260, 140],
+      "context_box": [400, 150, 260, 140],
+      "wire": [660, 246, 130],
+      "provider_card": [790, 150, 330, 140],
+      "retention_tag": [790, 306, 330],
+      "disk_line": [530, 290, 50],
+      "session_card": [80, 340, 680, 110],
+      "takeaway": [80, 500]
+    }
+  }
+}

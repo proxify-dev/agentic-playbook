@@ -1,0 +1,12 @@
+{
+  "network": {
+    "allowedDomains": ["{GATEWAY_HOST}", "api.anthropic.com", "*.anthropic.com", "claude.ai", "platform.claude.com"],
+    "deniedDomains": [],
+    "allowLocalBinding": true
+  },
+  "filesystem": {
+    "denyRead": ["{WORK}/.env", "{WORK}/.env.*", "{WORK}/service-account.json"],
+    "allowWrite": ["{WORK}", "{HOME}", "/tmp", "/private/tmp"],
+    "denyWrite": []
+  }
+}

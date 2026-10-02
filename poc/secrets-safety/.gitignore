@@ -1,0 +1,12 @@
+runs/work/
+.venv/
+.iso/
+__pycache__/
+*.log
+videos/*/snapshots/
+videos/*/renders/
+videos/*/.hyperframes/
+videos/*/.thumbnails/
+videos/*/CLAUDE.md
+videos/*/AGENTS.md
+runs*/

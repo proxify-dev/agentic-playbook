@@ -42,6 +42,7 @@
               "setup/claude-md",
               "setup/skills-stack",
               "setup/hooks-playbook",
+              "setup/secrets-safety",
               "setup/mcp-wiring",
               "setup/make-it-yours"
             ]

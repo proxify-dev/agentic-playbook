@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./service-account.json)"
+    ],
+    "allow": [
+      "Bash(printenv *)",
+      "Bash(python3 *)",
+      "Bash(env)",
+      "Bash(echo *)"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false,
+    "filesystem": {
+      "denyRead": [
+        "./.env",
+        "./.env.*",
+        "./service-account.json"
+      ]
+    }
+  }
+}

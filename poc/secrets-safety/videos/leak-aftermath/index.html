@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, height=680">
+    <title>Leak Aftermath</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-500.woff2") format("woff2"); font-weight: 500; font-style: normal; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-600.woff2") format("woff2"); font-weight: 600; font-style: normal; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-800.woff2") format("woff2"); font-weight: 800; font-style: normal; }
+      @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/jbmono-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/jbmono-500.woff2") format("woff2"); font-weight: 500; font-style: normal; }
+      @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/jbmono-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+
+      :root {
+        --surface: #0E0E28;
+        --surface-raised: #161640;
+        --border: #1E1E4A;
+        --indigo: #5258FB;
+        --indigo-fill: rgba(82, 88, 251, 0.14);
+        --lavender: #D5D5FE;
+        --mint: #4EEEB0;
+        --mint-fill: rgba(78, 238, 176, 0.14);
+        --amber: #E8965A;
+        --rose: #F06292;
+        --rose-fill: rgba(240, 98, 146, 0.16);
+        --text-primary: #E4E4F0;
+        --text-secondary: #8B8DC0;
+        --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, monospace;
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        width: 1200px;
+        height: 680px;
+        overflow: hidden;
+        background: transparent;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent;
+        font-family: var(--sans);
+        color: var(--text-primary);
+      }
+
+      /* ── title ── */
+      #head { position: absolute; left: 80px; top: 44px; width: 1040px; }
+      #title { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; line-height: 46px; color: var(--text-primary); }
+      #subtitle { margin-top: 6px; font-size: 22px; font-weight: 500; line-height: 30px; color: var(--text-secondary); }
+
+      /* ── cards ── */
+      .card {
+        position: absolute;
+        border-radius: 14px;
+        background: var(--surface);
+        border: 2px solid var(--border);
+      }
+      .card-label { position: absolute; left: 16px; top: 14px; font-size: 22px; font-weight: 600; line-height: 30px; }
+      .mono-label { font-family: var(--mono); font-size: 18px; font-weight: 500; line-height: 24px; color: var(--text-secondary); }
+
+      #env-card { left: 80px; top: 150px; width: 260px; height: 140px; }
+      #env-name { position: absolute; left: 16px; top: 16px; }
+      #env-key { position: absolute; left: 16px; top: 42px; font-family: var(--mono); font-size: 18px; font-weight: 500; line-height: 24px; color: var(--text-primary); }
+      #rot-icon { position: absolute; left: 214px; top: 12px; width: 30px; height: 30px; display: block; }
+
+      #ctx-box { left: 400px; top: 150px; width: 260px; height: 140px; background: var(--surface); border-color: var(--indigo); }
+      #ctx-box .card-label { color: var(--lavender); }
+
+      #prov-card { left: 790px; top: 150px; width: 330px; height: 140px; }
+      #prov-card .card-label { color: var(--text-primary); }
+
+      /* ── chips (stage coordinates) ── */
+      .chip {
+        position: absolute;
+        top: 228px;
+        height: 36px;
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        font-family: var(--mono);
+        font-size: 20px;
+        font-weight: 500;
+        border-radius: 8px;
+        color: var(--rose);
+        background: var(--surface-raised);
+        border: 1.5px solid var(--rose);
+        box-shadow: inset 0 0 0 40px var(--rose-fill);
+      }
+      #chip-env { left: 96px; }
+      #chip-new {
+        left: 96px;
+        color: var(--mint);
+        border-color: var(--mint);
+        box-shadow: inset 0 0 0 40px var(--mint-fill);
+        font-family: var(--sans);
+        font-weight: 600;
+      }
+      #chip-ctx, #chip-r, #chip-d { left: 96px; }
+      #chip-r, #chip-d { left: 416px; }
+
+      /* ── connectors ── */
+      #wire {
+        position: absolute; left: 662px; top: 245px; width: 126px; height: 3px; display: block;
+        background: repeating-linear-gradient(90deg, var(--indigo) 0 10px, transparent 10px 18px);
+      }
+      #wire-label { position: absolute; left: 662px; top: 208px; width: 126px; text-align: center; font-size: 18px; font-weight: 500; line-height: 24px; color: var(--text-secondary); }
+      #disk-line {
+        position: absolute; left: 528px; top: 292px; width: 3px; height: 46px; display: block;
+        background: repeating-linear-gradient(180deg, var(--indigo) 0 8px, transparent 8px 14px);
+      }
+      #disk-label { position: absolute; left: 548px; top: 302px; font-size: 18px; font-weight: 500; line-height: 24px; color: var(--text-secondary); white-space: nowrap; }
+
+      /* ── retention tag ── */
+      #ret-tag {
+        position: absolute; left: 790px; top: 306px; width: 330px;
+        padding: 10px 16px;
+        border-radius: 12px;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+      }
+      .ret-line { font-size: 18px; font-weight: 500; line-height: 26px; color: var(--text-secondary); }
+      .ret-line b { font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+
+      /* ── session file ── */
+      #sess-card { left: 80px; top: 340px; width: 680px; height: 140px; }
+      #sess-path { position: absolute; left: 20px; top: 14px; }
+      #sess-line {
+        position: absolute; left: 20px; top: 50px;
+        font-family: var(--mono); font-size: 22px; font-weight: 500; line-height: 30px;
+        color: var(--text-primary); white-space: nowrap;
+      }
+      #sess-line .ch { opacity: 0; }
+      #sess-hl { border-radius: 5px; color: var(--rose); padding: 0 2px; }
+      #sess-tag {
+        position: absolute; left: 20px; top: 94px; height: 32px; padding: 0 12px;
+        display: flex; align-items: center;
+        font-size: 18px; font-weight: 600; color: var(--rose);
+        border: 1.5px solid var(--rose); border-radius: 16px;
+        background: var(--surface-raised);
+        box-shadow: inset 0 0 0 40px var(--rose-fill);
+      }
+
+      /* ── takeaway ── */
+      #take { position: absolute; left: 80px; top: 512px; width: 1040px; }
+      #take-line { font-size: 44px; font-weight: 800; letter-spacing: -0.02em; line-height: 52px; color: var(--mint); }
+      #take-sub { margin-top: 10px; font-size: 22px; font-weight: 500; line-height: 30px; color: var(--text-secondary); }
+
+      #dim-group { position: absolute; left: 0; top: 0; width: 1200px; height: 680px; }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-hnfo" id="root" data-composition-id="main" data-start="0" data-duration="11" data-fps="30" data-width="1200" data-height="680">
+        <div data-hf-id="hf-z8f3" id="head">
+          <div data-hf-id="hf-1moq" id="title">Once it's in context, it's out</div>
+          <div data-hf-id="hf-abex" id="subtitle">One secret in Claude's context becomes copies you can't recall.</div>
+        </div>
+
+        <!-- the source: stays bright through the interrupt -->
+        <div data-hf-id="hf-uqas" id="env-card" class="card">
+          <div data-hf-id="hf-d2go" id="env-name" class="mono-label">.env</div>
+          <div data-hf-id="hf-fson" id="env-key">PAYMENTS_API_KEY=</div>
+          <svg data-hf-id="hf-eex1" id="rot-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path data-hf-id="hf-tyxb" d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3" fill="none" stroke="#4EEEB0" stroke-width="2.4" stroke-linecap="round" />
+            <path data-hf-id="hf-xbwr" d="M19.6 3.6v4.6H15" fill="none" stroke="#4EEEB0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div data-hf-id="hf-plcs" id="chip-env" class="chip" data-layout-allow-occlusion="true">CANARY_ENV_7f3a9c</div>
+        <div data-hf-id="hf-0ss7" id="chip-new" class="chip">key rotated</div>
+
+        <!-- everything that dims at the interrupt -->
+        <div data-hf-id="hf-bzgb" id="dim-group">
+          <div data-hf-id="hf-uvmb" id="ctx-box" class="card"><div data-hf-id="hf-nayg" class="card-label">Claude's context</div></div>
+          <div data-hf-id="hf-e4mk" id="prov-card" class="card"><div data-hf-id="hf-7yrp" class="card-label">Model provider</div></div>
+
+          <div data-hf-id="hf-mn1q" id="wire"></div>
+          <div data-hf-id="hf-1sci" id="wire-label">on the wire</div>
+          <div data-hf-id="hf-5dwx" id="disk-line"></div>
+          <div data-hf-id="hf-pvek" id="disk-label">saved to disk</div>
+
+          <div data-hf-id="hf-g9rp" id="ret-tag">
+            <div data-hf-id="hf-p1r0" class="ret-line">Team / Enterprise / API: <b data-hf-id="hf-k109">30 days</b></div>
+            <div data-hf-id="hf-2nv3" class="ret-line">Free / Pro / Max: <b data-hf-id="hf-afvx">30 days</b>, or <b data-hf-id="hf-f0ou">5 years</b> if shared for training</div>
+          </div>
+
+          <div data-hf-id="hf-fz6t" id="sess-card" class="card">
+            <div data-hf-id="hf-gu0m" id="sess-path" class="mono-label">~/.claude/projects/…/session.jsonl</div>
+            <div data-hf-id="hf-dh0a" id="sess-line"></div>
+            <div data-hf-id="hf-ft6k" id="sess-tag">plain text · kept 30 days</div>
+          </div>
+
+          <div data-hf-id="hf-gngs" id="chip-ctx" class="chip" data-layout-allow-overlap="true" data-layout-allow-occlusion="true">CANARY_ENV_7f3a9c</div>
+          <div data-hf-id="hf-yfgz" id="chip-r" class="chip" data-layout-allow-overlap="true" data-layout-allow-occlusion="true">CANARY_ENV_7f3a9c</div>
+          <div data-hf-id="hf-xvoh" id="chip-d" class="chip" data-layout-allow-overlap="true" data-layout-allow-occlusion="true">CANARY_ENV_7f3a9c</div>
+        </div>
+
+        <div data-hf-id="hf-u1qc" id="take">
+          <div data-hf-id="hf-0sgv" id="take-line">Only fix: rotate the key.</div>
+          <div data-hf-id="hf-c09e" id="take-sub">Prevention beats cleanup — block it before it's read.</div>
+        </div>
+    </div>
+    <script>
+      // Build the session JSON line as per-character spans (deterministic, static text).
+      const PRE = '{"text":"PAYMENTS_API_KEY=';
+      const SECRET = "CANARY_ENV_7f3a9c";
+      const POST = '"}';
+      const line = document.getElementById("sess-line");
+      const addChars = (parent, text) => {
+        for (const c of text) {
+          const s = document.createElement("span");
+          s.className = "ch";
+          s.textContent = c;
+          parent.appendChild(s);
+        }
+      };
+      addChars(line, PRE);
+      const hl = document.createElement("span");
+      hl.id = "sess-hl";
+      addChars(hl, SECRET);
+      line.appendChild(hl);
+      addChars(line, POST);
+      const chars = Array.from(line.querySelectorAll(".ch"));
+
+      const C = {
+        indigo: "#5258FB",
+        lavender: "#D5D5FE",
+        mint: "#4EEEB0",
+        border: "#1E1E4A",
+        roseFill: "rgba(240, 98, 146, 0.22)",
+        clear: "rgba(240, 98, 146, 0)",
+      };
+      const OFF = { autoAlpha: 0 };
+
+      const tl = gsap.timeline({ paused: true });
+
+      // ── Beat 1: the source, then a copy into context ──
+      tl.fromTo("#head", { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.1);
+      tl.fromTo(["#env-card", "#chip-env"], { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0.45);
+      tl.fromTo("#ctx-box", { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0.75);
+
+      // the lifted copy: rises out of .env, then lands in the context slot (x +320)
+      tl.fromTo("#chip-ctx", { autoAlpha: 0, x: 0, y: 0, scale: 1 }, { autoAlpha: 1, y: -10, scale: 1.04, duration: 0.3, ease: "power2.out" }, 1.3);
+      tl.to("#chip-ctx", { x: 320, duration: 0.75, ease: "power3.inOut" }, 1.55);
+      tl.to("#chip-ctx", { y: 0, scale: 1, duration: 0.35, ease: "power2.in" }, 2.0);
+      tl.fromTo("#ctx-box", { borderColor: C.indigo }, { borderColor: C.lavender, duration: 0.15, ease: "power2.out", immediateRender: false }, 2.33);
+      tl.to("#ctx-box", { borderColor: C.indigo, duration: 0.45, ease: "power2.out" }, 2.48);
+
+      // ── Beat 2: two copies at once ──
+      tl.fromTo("#prov-card", { autoAlpha: 0, x: 16 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: "power3.out" }, 2.55);
+      tl.fromTo("#sess-card", { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" }, 2.6);
+      tl.fromTo("#wire", { scaleX: 0, transformOrigin: "left center" }, { scaleX: 1, duration: 0.45, ease: "power2.out" }, 2.65);
+      tl.fromTo("#disk-line", { scaleY: 0, transformOrigin: "center top" }, { scaleY: 1, duration: 0.4, ease: "power2.out" }, 2.65);
+      tl.fromTo(["#wire-label", "#disk-label"], OFF, { autoAlpha: 1, duration: 0.35, ease: "power2.out", stagger: 0.08 }, 2.85);
+
+      // right copy: on the wire to the provider (x +390 → provider slot)
+      tl.fromTo("#chip-r", { autoAlpha: 0, x: 0 }, { autoAlpha: 1, duration: 0.15, ease: "power2.out" }, 3.1);
+      tl.to("#chip-r", { x: 390, duration: 1.1, ease: "power2.inOut" }, 3.15);
+      tl.fromTo("#prov-card", { borderColor: C.border }, { borderColor: C.lavender, duration: 0.15, ease: "power2.out", immediateRender: false }, 4.22);
+      tl.to("#prov-card", { borderColor: C.border, duration: 0.5, ease: "power2.out" }, 4.37);
+
+      // down copy: drops along the disk line into the session file
+      tl.fromTo("#chip-d", { autoAlpha: 0, y: 0, scale: 1 }, { autoAlpha: 1, duration: 0.15, ease: "power2.out" }, 3.1);
+      tl.to("#chip-d", { y: 104, scale: 0.92, duration: 0.55, ease: "power2.in" }, 3.15);
+      tl.to("#chip-d", { autoAlpha: 0, duration: 0.2, ease: "power2.out" }, 3.62);
+
+      // the JSON line types in; the canary lands in plain text
+      const T0 = 3.72, STEP = 0.026;
+      tl.fromTo(chars, { opacity: 0 }, { opacity: 1, duration: 0.01, ease: "none", stagger: STEP }, T0);
+      tl.fromTo("#sess-hl", { backgroundColor: C.clear }, { backgroundColor: C.roseFill, duration: 0.2, ease: "power2.out" }, T0 + PRE.length * STEP);
+
+      // retention facts
+      tl.fromTo("#ret-tag", { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.4);
+      tl.fromTo("#ret-tag .ret-line", { autoAlpha: 0, x: -8 }, { autoAlpha: 1, x: 0, duration: 0.4, ease: "power2.out", stagger: 0.1 }, 4.5);
+      tl.fromTo("#sess-tag", { autoAlpha: 0, scale: 0.85, transformOrigin: "left center" }, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)" }, 5.0);
+
+      // ── Pattern interrupt: everything dims, the source key gets rotated ──
+      tl.fromTo("#dim-group", { opacity: 1 }, { opacity: 0.38, duration: 0.5, ease: "power2.out", immediateRender: false }, 6.6);
+      tl.fromTo("#head", { opacity: 1 }, { opacity: 0.45, duration: 0.5, ease: "power2.out", immediateRender: false }, 6.6);
+      tl.fromTo("#env-card", { borderColor: C.border }, { borderColor: C.mint, duration: 0.4, ease: "power2.out", immediateRender: false }, 6.9);
+      tl.fromTo("#rot-icon", { autoAlpha: 0, rotation: 0, transformOrigin: "50% 50%" }, { autoAlpha: 1, duration: 0.2, ease: "power2.out" }, 6.9);
+      tl.to("#rot-icon", { rotation: 360, duration: 0.9, ease: "power2.inOut" }, 6.95);
+      tl.to("#chip-env", { autoAlpha: 0, y: -8, duration: 0.25, ease: "power2.in" }, 7.35);
+      tl.fromTo("#chip-new", { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: "back.out(1.6)" }, 7.5);
+
+      // takeaway, then hold to 11 s
+      tl.fromTo("#take-line", { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 7.7);
+      tl.fromTo("#take-sub", { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" }, 8.05);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

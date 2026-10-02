@@ -1,0 +1,6 @@
+app:
+  name: demo-mobile-backend
+  env_file: .env
+gcp:
+  project: demo-fake-project
+  credentials_file: ./service-account.json

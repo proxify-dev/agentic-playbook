@@ -1,0 +1,1 @@
+{"sandbox": {"credentials": {"files": [{"path": "{WORK}/.env", "mode": "deny"}, {"path": "{WORK}/service-account.json", "mode": "deny"}], "envVars": [{"name": "APP_API_TOKEN", "mode": "deny"}]}}}

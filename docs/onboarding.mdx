@@ -14,12 +14,16 @@ The first part takes about 30 minutes and you only do it once. The second part y
     [Official quickstart](https://code.claude.com/docs/en/quickstart). Pin a stable version if you need to.
   </Step>
   <Step title="Install the Agentic Kit">
-    The kit gives you and your agent the scaffolding for everything below: memory, skills, plugins, and knowing what goes where.
+    Tools for working in Claude Code all day: search your past sessions, skills for building with agents, and commands that scaffold your own plugins, skills and agents. One install, one undo.
 
-    <Note>Coming soon. The install line lands here as soon as the kit is published.</Note>
+    ```bash
+    uvx --from "git+https://github.com/proxify-dev/agentic-kit#subdirectory=plugins/ak" ak setup
+    ```
+
+    You need [uv](https://docs.astral.sh/uv/), git and Claude Code. Setup checks your machine, lets you tick what you want, shows every change it will make, then installs. Runs on macOS and Linux. [agentic-kit on GitHub →](https://github.com/proxify-dev/agentic-kit)
   </Step>
   <Step title="Make a personal workspace">
-    Keep your own skills and agents in a personal plugin, tracked in git and installed in dev mode so changes apply instantly. Anything you install globally with `npx skills add` gets mixed in with everything else. Your own work deserves a home. [Make it yours →](/setup/make-it-yours/)
+    Keep your own skills and agents in a personal plugin, tracked in git and installed in dev mode so changes apply instantly. Anything you install globally with `npx skills add` gets mixed in with everything else. Your own work deserves a home. The kit's `/new-plugin` sets one up for you. [Make it yours →](/setup/make-it-yours/)
   </Step>
   <Step title="Set your safety defaults">
     Hooks that lint after every edit and block `.env` from being committed. These follow you to every client. [Hooks playbook →](/setup/hooks-playbook/) · [Secrets safety →](/setup/secrets-safety/)

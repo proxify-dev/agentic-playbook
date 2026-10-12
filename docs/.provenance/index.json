@@ -614,7 +614,7 @@
       "confidence": "inferred",
       "last_audited": "2026-03-25"
     },
-    "reference/onboarding-checklist": {
+    "onboarding": {
       "sources": [
         {
           "ref": "claude-code-tips/README.md",

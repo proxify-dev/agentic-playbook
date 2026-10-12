@@ -1,0 +1,151 @@
+---
+title: "Onboarding"
+description: "Set up your machine once, then orient fast on every new client project and get to your first contribution."
+---
+
+Onboarding happens twice. Once on your machine, when you set up how you work with agents. Then again every time you join a new client, when you point that setup at their product and code.
+
+The first part takes about 30 minutes and you only do it once. The second part you repeat on every engagement, and it's where agents save you the most time.
+
+## Once, on your machine
+
+<Steps>
+  <Step title="Install Claude Code">
+    [Official quickstart](https://code.claude.com/docs/en/quickstart). Pin a stable version if you need to.
+  </Step>
+  <Step title="Install the Agentic Kit">
+    The kit gives you and your agent the scaffolding for everything below: memory, skills, plugins, and knowing what goes where.
+
+    <Note>Coming soon. The install line lands here as soon as the kit is published.</Note>
+  </Step>
+  <Step title="Make a personal workspace">
+    Keep your own skills and agents in a personal plugin, tracked in git and installed in dev mode so changes apply instantly. Anything you install globally with `npx skills add` gets mixed in with everything else. Your own work deserves a home. [Make it yours →](/setup/make-it-yours/)
+  </Step>
+  <Step title="Set your safety defaults">
+    Hooks that lint after every edit and block `.env` from being committed. These follow you to every client. [Hooks playbook →](/setup/hooks-playbook/) · [Secrets safety →](/setup/secrets-safety/)
+  </Step>
+  <Step title="Small comforts">
+    An alias like `alias c='claude'`. `/statusline` to see how full the context is and which branch you're on. `/voice`, then hold **Space** to dictate.
+  </Step>
+</Steps>
+
+## Every new client
+
+Every engagement has the same first goal: orient fast and get to your first contribution.
+
+Work in this order: the **product** first, then the **business** it serves, then the **setup** that runs it. Code makes sense once you know what it's for.
+
+<Steps>
+  <Step title="Give the client a home folder">
+    Before anything else, make one folder for the engagement. Every repo, worktree and note for this client lives inside it, and a `CLAUDE.md` at its root tells your agents where they are.
+
+    ```text
+    ~/acme/
+    ├── CLAUDE.md          who you are, the client, the repos, how you work here
+    ├── CLAUDE.local.md    yours only: notes, ideas, anything private
+    ├── frontend-repo/     a clean checkout of each repo, always on main
+    ├── backend-repo/
+    └── w/                 your worktrees, one per task
+    ```
+
+    Claude Code reads every `CLAUDE.md` in the folders above where you start it. So a session started in any repo or worktree under `~/acme` already knows who you are, who the client is and where everything lives, without you saying it again.
+
+    Keep it short. A few lines per section is enough:
+
+    ```markdown
+    <user>
+    Name: Ana. Senior backend engineer at Acme, through Proxify.
+    Team: payments. Lead: <name>.
+    </user>
+
+    ## Acme
+    What they sell, who uses it, what matters to them this quarter.
+
+    ## Repos
+    - [frontend-repo](https://github.com/acme/frontend-repo): customer web app. Local: ./frontend-repo
+    - [backend-repo](https://github.com/acme/backend-repo): payments API. Local: ./backend-repo
+
+    ## Worktrees
+    ./frontend-repo and ./backend-repo stay on main and stay clean. Never develop in them.
+    New task: git -C ./backend-repo worktree add ./w/<task> -b <branch> origin/main
+
+    ## Tools & access
+    - Data: BigQuery, read-only. How to connect: the use-bigquery skill.
+    - Docs: Confluence space PAY.
+    ```
+
+    For each tool, point to a skill instead of pasting the how-to into `CLAUDE.md`. The skill only loads when the agent actually needs it, so every session doesn't carry it around.
+  </Step>
+
+  <Step title="Explore the stack">
+    Before you read any code, give your agent access to what you need to understand.
+
+    **Connect first.** Install the connectors the client allows: GitHub at minimum, plus their issue tracker and docs if you can. [MCP wiring →](/setup/mcp-wiring/)
+
+    <Warning>Ask what the client lets an agent read before you connect anything. Their code and data, their rules. [Secrets safety →](/setup/secrets-safety/)</Warning>
+
+    **Then let an agent map it for you.** Send one across the whole GitHub organization and ask for a walkthrough you can read:
+
+    ```text
+    Using the GitHub connector, go through every repo in the <org> organization.
+    For each one: what it does, its stack, how it is built and deployed,
+    and how it talks to the others. Build me one HTML page that walks a new
+    engineer through it, starting from the product.
+    ```
+
+    You get a map of the whole setup on day one, instead of after two weeks of clicking around. Save it in your client folder, and copy the repo list it finds into your `CLAUDE.md`.
+  </Step>
+
+  <Step title="Get the skills this project needs">
+    Once you know the stack, look for skills built for it. Don't install everything. Install what this project needs.
+
+    ```bash
+    npx skills search <keyword>      # e.g. the framework, the cloud, the test runner
+    npx skills add owner/repo@skill-name
+    ```
+
+    Browse [skills.sh](https://skills.sh) and the top plugins too. Even the ones you skip show you what people use agents for. [Skills stack →](/setup/skills-stack/)
+
+    <Warning>A skill is instructions your agent will follow. Read it before you install it. [Supply chain →](/patterns/supply-chain/)</Warning>
+
+    <Tip>If a teammate on the client already uses Claude Code, ask them to run `/team-onboarding`. It writes an onboarding guide from how they've used Claude on that codebase. Few people know it exists.</Tip>
+  </Step>
+
+  <Step title="Set up your workspace so you can orient">
+    This is the step most people skip, and it's the one that pays off every day after.
+
+    **Shared vs personal instructions, inside each repo.** What every agent on this repo should know goes in the repo's `CLAUDE.md`. What is only yours, like your notes, your shortcuts and your agenda, goes in `CLAUDE.local.md`, which stays out of git. [CLAUDE.md →](/setup/claude-md/)
+
+    **Turn what you learn into rules as you go.** The first time you do something the client's way, like a release or a pull request, walk the agent through it in chat. At the end, say: *"put this into `RELEASING.md` so future sessions follow it"*, and add a pointer to it in `CLAUDE.md`. You did the process once. Every agent after you inherits it.
+
+    **Start a memory folder.** One `MEMORY.md` index plus a few files: the architecture, open tasks, tech debt, decisions and who owns what. Write one line to show the structure and the agent keeps filling it in the same way. It becomes your board and your diary for the engagement.
+  </Step>
+
+  <Step title="Get ready to work in parallel">
+    Sooner or later you'll want two or three agents on different tasks at the same time. Set up for that on day one, not on the day files start colliding.
+
+    **Keep one clean checkout and never develop in it.** It stays on `main`, and all you ever do there is `git pull`. Every task gets its own worktree, cut fresh from `main` into a folder next to it:
+
+    ```bash
+    git -C ~/acme/backend-repo worktree add ~/acme/w/<task> -b <branch> origin/main
+    ```
+
+    The clean checkout is the point. Leave a side branch living in your main folder and it drifts for weeks until nobody can merge it. Keep `main` pristine and that can't happen.
+
+    **Write the strategy down for your agents.** Put the worktree rules in your client folder's `CLAUDE.md`: where worktrees live, how they're named, and that the main checkout is never touched. Every session then follows the same layout without being told.
+
+    **Plan for the running stack, not just the code.** Each worktree may need its own copy of the backend to test against. Before you go parallel, work out which services each worktree runs on its own, which ones they share, and which are too heavy to run more than once locally. Files git doesn't track, like `.env`, don't follow you into a new worktree, so plan how they get there.
+
+    For a quick one-off task, `claude --worktree` starts a session in its own worktree and cleans up after itself. [Parallel execution →](/patterns/parallel-execution/)
+  </Step>
+
+  <Step title="Ship your first contribution">
+    Pick something small and real. Plan it before you execute: `/plan`, review, then go. [Workflow patterns →](/patterns/workflow-patterns/)
+
+    For a big task, let your main session be the orchestrator. It keeps the whole picture and sends subagents to do the pieces. [Subagent patterns →](/patterns/subagent-patterns/)
+
+    Skim the [common pitfalls](/reference/common-pitfalls/) before you do.
+  </Step>
+</Steps>
+
+<Tip>Engineers who onboard well have a method: they know what they look for first. This page is a starting method. Change it as you learn what works for you, then write the changes down for your agents too.</Tip>

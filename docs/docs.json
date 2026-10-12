@@ -16,6 +16,10 @@
     "name": "GitHub",
     "url": "https://github.com/proxify-dev/Claude-Code"
   },
+  "redirects": [
+    { "source": "/reference/onboarding-checklist", "destination": "/onboarding" },
+    { "source": "/setup/client-onboarding", "destination": "/onboarding" }
+  ],
   "navigation": {
     "tabs": [
       {
@@ -23,7 +27,7 @@
         "groups": [
           {
             "group": "Level Up",
-            "pages": ["index"]
+            "pages": ["index", "onboarding"]
           },
           {
             "group": "Mindset",
@@ -50,7 +54,6 @@
           {
             "group": "Quick Reference",
             "pages": [
-              "reference/onboarding-checklist",
               "reference/common-pitfalls",
               "reference/links"
             ]

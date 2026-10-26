@@ -1,0 +1,170 @@
+---
+title: "Vocabulary"
+description: "The named problems of working with agents, the moves that fix them, who named each one, and how settled the word is."
+sources:
+  - "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+  - "https://www.dbreunig.com/2025/06/22/how-contexts-fail-and-how-to-fix-them.html"
+  - "https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html"
+  - "https://www.trychroma.com/research/context-rot"
+  - "https://rlancemartin.github.io/2025/06/23/context_engineering/"
+  - "https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus"
+  - "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"
+  - "https://mitchellh.com/writing/my-ai-adoption-journey"
+  - "https://code.claude.com/docs/en/best-practices"
+---
+
+Agentic engineering picked up its own words fast. Some are settled across the industry, some come from one blog post, and some are forum slang. This page lists the ones worth knowing: what each means, who named it, and how settled it is. Use the right word, and follow the link when you want the original.
+
+Every entry links to its source. Each one was checked against that source in October 2026.
+
+| Label | Meaning |
+|---|---|
+| **Standard** | Several independent companies or authors use it with the same meaning. Safe to use as is. |
+| **Emerging** | Two or three credible uses. Fine to use, best with credit ("Breunig's context clash"). |
+| **One source** | One company or author. Worth knowing; say where it comes from. |
+| **Slang** | Forum talk with no defined source. Say what you mean instead. |
+
+## The context window
+
+Everything the agent knows when it acts sits in its context window. Most of the named problems are about what goes into that window and how it decays.
+
+### What goes wrong
+
+| Term | What happens | Named by | How settled |
+|---|---|---|---|
+| [Context rot](https://www.trychroma.com/research/context-rot) | The more tokens in the context, the worse the model recalls and reasons. More context is not automatically better. | A Hacker News comment (June 2025), measured by Chroma, defined by Anthropic | Standard |
+| [Lost in the middle](https://arxiv.org/abs/2307.03172) | Facts at the start or end of a long input get used; facts in the middle get missed. | Liu et al., 2023 | Standard |
+| [Context poisoning](https://www.dbreunig.com/2025/06/22/how-contexts-fail-and-how-to-fix-them.html) | A wrong fact or hallucination gets into the context, and the model keeps building on it. | Gemini 2.5 report; Drew Breunig, 2025 | Emerging |
+| [Context distraction](https://www.dbreunig.com/2025/06/22/how-contexts-fail-and-how-to-fix-them.html) | The context grows so long that the model leans on it and neglects what it learned in training. | Drew Breunig, 2025 | Emerging |
+| [Context confusion](https://www.dbreunig.com/2025/06/22/how-contexts-fail-and-how-to-fix-them.html) | Extra content, most often too many tool definitions, drags the answer down. | Drew Breunig, 2025 | Emerging |
+| [Context clash](https://www.dbreunig.com/2025/06/22/how-contexts-fail-and-how-to-fix-them.html) | New information conflicts with what is already in the context. | Drew Breunig, 2025 | Emerging |
+| [Lost in conversation](https://github.com/microsoft/lost_in_conversation) | One wrong turn early in a multi-turn chat and the model rarely recovers. The study measured a 39% average drop versus one complete prompt. | Laban et al. (Microsoft), 2025 | Emerging |
+| [Context pollution](https://www.philschmid.de/context-engineering-part-2) | Irrelevant or stale content, such as failed attempts and unrelated tasks, piles up and degrades the output. | No single author; used by Anthropic | Emerging |
+| [Attention budget](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) | The model has a limited budget of attention, and every token spends some of it. | Anthropic, 2025 | Emerging |
+| [Context anxiety](https://cognition.com/blog/devin-sonnet-4-5-lessons-and-challenges) | A model that knows its window size rushes or wraps up early, believing it is near the end when it isn't. | Cognition (Devin), 2025 | Emerging |
+| [Dumb zone](https://ai.engineer/talks/rmvDxxNubIg-context-engineering-for-complex-codebases) | Past a certain fill level, the agent's decisions get noticeably worse. | Dex Horthy (HumanLayer), 2025 | Emerging |
+| [Goal drift](https://arxiv.org/abs/2505.02709) | Over a long run, the agent wanders away from its original objective. | Arike et al., 2025 | Emerging |
+| [Context collapse](https://arxiv.org/abs/2510.04618) | Summarising a context again and again erodes the details until little useful is left. | Zhang et al. (ACE paper), 2025 | One source |
+| [Kitchen sink session](https://code.claude.com/docs/en/best-practices) | One chat for unrelated tasks, so each task's leftovers crowd the next. | Anthropic, Claude Code docs | One source |
+
+### The moves that fix it
+
+| Term | What you do | Named by | How settled |
+|---|---|---|---|
+| [Context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) | The umbrella: choose and maintain the right tokens in the window for each step. | No single author (2025) | Standard |
+| [Compaction](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) | Summarise the conversation near the limit and continue in a fresh window from the summary. | Defined by Anthropic | Standard |
+| [Sub-agents (context isolation)](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) | Hand a focused task to a sub-agent with its own clean window; only a short summary comes back. | Anthropic; "context quarantine" is Breunig's name | Standard |
+| [RAG](https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html) | Fetch only the relevant information into the context instead of loading everything. | Lewis et al., 2020 | Standard |
+| [Progressive disclosure](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills) | Keep a short version always loaded and open the detail only when it is needed. The design idea behind Agent Skills. | From UX design; Anthropic for agents | Emerging |
+| [Just-in-time retrieval](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) | Keep pointers (file paths, queries, links) and load the content at the moment it is needed. | Anthropic, 2025 | Emerging |
+| [Write, select, compress, isolate](https://rlancemartin.github.io/2025/06/23/context_engineering/) | Four groups of moves: write context outside the window, select what goes in, compress it, split it up. | Lance Martin (LangChain), 2025 | Emerging |
+| [Context pruning](https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html) | Remove what the task no longer needs. | Drew Breunig, 2025 | Emerging |
+| [Context offloading](https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html) | Store information outside the context, such as in files or notes, and read it back when needed. | Drew Breunig, 2025 | Emerging |
+| [Recitation](https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus) | Keep rewriting a `todo.md` so the plan stays at the end of the context, where attention is strongest. | Manus, 2025 | Emerging |
+| [Tool loadout](https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html) | Load only the tool definitions this task needs. | Drew Breunig, 2025 | One source |
+| [Tool search](https://www.anthropic.com/engineering/advanced-tool-use) | Let the agent search for tools on demand instead of loading them all up front. | Anthropic, 2025 | One source |
+| [Intentional compaction](https://www.humanlayer.dev/blog/advanced-context-engineering) | Before the window fills, have the agent write the work so far into a file you can review, then continue from that. | Dex Horthy (HumanLayer), 2025 | One source |
+| [Context reset (handoff)](https://www.anthropic.com/engineering/harness-design-long-running-apps) | Clear the window entirely and start a fresh agent, with a written handoff of state and next steps. | Anthropic, 2025 | One source |
+| [Structured note-taking](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) | The agent writes notes outside the window and reads them back later. | Anthropic, 2025 | One source |
+
+### If you see this, reach for that
+
+| You notice | Reach for |
+|---|---|
+| The agent gets worse as the chat gets long (context rot, dumb zone) | Compaction, or a context reset with a handoff file |
+| The agent keeps building on a wrong idea (context poisoning) | A fresh chat with a corrected prompt, not more arguing in the same one |
+| Too many tools, and it picks the wrong one (context confusion) | Tool loadout or tool search |
+| Instructions contradict each other (context clash) | One rule in one place; prune the rest |
+| Exploration output floods the chat (context pollution) | A sub-agent that returns only the summary |
+| The instructions file keeps growing | Progressive disclosure: a short root file that points to detail |
+
+## Prompts and instructions
+
+| Term | What it means | Named by | How settled |
+|---|---|---|---|
+| [Sycophancy](https://arxiv.org/abs/2310.13548) | The model tells you what you want to hear instead of what is true. | Research term; Sharma et al., 2023 | Standard |
+| [Prompt bloat](https://code.claude.com/docs/en/best-practices) | The prompt or instructions file grows so big that important rules get lost. Anthropic calls one form "the over-specified CLAUDE.md". | Anthropic and others | Emerging |
+| [Prompt debt](https://www.dbreunig.com/2026/06/22/the-problem-is-prompt-debt.html) | Quick fixes pile up in a prompt until nobody dares touch it. | Drew Breunig, 2026 | Emerging |
+| [Prompt overfitting](https://arxiv.org/html/2309.03409) | A prompt tuned on a few cases scores well there and worse everywhere else. | Borrowed from machine learning | Emerging |
+| [Aggressive prompt language](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices) | "CRITICAL: you MUST…". Newer models follow the system prompt more closely, so shouting makes them over-trigger. | Anthropic docs | Emerging |
+| [Pink Elephant problem](https://arxiv.org/abs/2402.07896) | Telling a model not to mention something tends to bring it up. | Castricato et al., 2024 | Emerging |
+| [Overeagerness](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices) | The agent goes beyond the task: extra files, extra abstractions, changes nobody asked for. | Anthropic docs | Emerging |
+| [Prompt drift](https://arxiv.org/html/2406.06608v6) | The same prompt behaves differently over time. People mean three things by it: the model changed, your own edits regressed it, or it fades over a long chat. | The Prompt Report | Emerging |
+| [Whack-a-mole](https://arxiv.org/html/2603.00829v2) | Each prompt patch for one failure causes another somewhere else, and progress stalls. | Storf et al., 2026 | One source |
+| [Fighting the weights](https://www.dbreunig.com/2025/11/11/don-t-fight-the-weights.html) | Asking for something the model's training pulls against; repeating it louder doesn't help. | Drew Breunig, 2025 | One source |
+| [Right altitude](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) | The fix side: write instructions between brittle hard-coded rules and vague guidance. | Anthropic, 2025 | One source |
+
+## Checking the work
+
+| Term | What it means | Named by | How settled |
+|---|---|---|---|
+| [Reward hacking](https://www.anthropic.com/research/emergent-misalignment-reward-hacking) | The model games the score instead of doing the task. | AI safety research, 2016 | Standard |
+| [Special-casing tests](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices) | The agent hard-codes the expected test values instead of writing the real logic. | Anthropic | Emerging |
+| [Declaring done too early](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) | The agent marks the task done without testing it end to end. | Anthropic | One source |
+| [Doom loop](https://codemanship.wordpress.com/2025/09/30/comprehension-debt-the-ticking-time-bomb-of-llm-generated-code/) | Going round in circles asking the agent to fix something it can't. | No known author | Emerging |
+| [Package hallucination](https://arxiv.org/abs/2406.10279) | The agent imports a package that doesn't exist. | Lanyado (Vulcan Cyber), 2023 | Emerging |
+| [Evals](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) | Tests for AI behaviour: an input, the output, and grading logic. | No single author | Standard |
+| [LLM-as-a-judge](https://arxiv.org/abs/2306.05685) | A strong model grades another model's or agent's output. | Zheng et al., 2023 | Standard |
+| [Error analysis](https://hamel.dev/blog/posts/evals-faq/why-is-error-analysis-so-important-in-llm-evals-and-how-is-it-performed.html) | Read real traces, note each failure, group the notes into categories and count them, so you know which evals are worth writing. | Hamel Husain and Shreya Shankar | One source |
+| [Plan mode](https://code.claude.com/docs/en/permission-modes) | The agent researches and proposes a plan, and nothing is edited until you approve it. | Cline, Claude Code, Cursor | Standard |
+| [Spec-driven development](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html) | Write a structured spec first and treat it as the source of truth for you and the agent. The meaning is still loose. | Kiro, GitHub Spec Kit, Böckeler | Standard |
+| [TDD with agents](https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/) | The agent writes failing tests first, then works until they pass. | Kent Beck, Simon Willison | Emerging |
+| [Generator and evaluator](https://www.anthropic.com/engineering/building-effective-agents) | A second, sceptical agent grades the first agent's work. | Anthropic, 2024 | Emerging |
+| [Backpressure](https://banay.me/dont-waste-your-backpressure/) | Builds, types, linters and tests that let the agent catch its own mistakes before you have to. | Geoffrey Huntley; Moss, 2026 | Emerging |
+
+## Running agents safely
+
+| Term | What it means | Named by | How settled |
+|---|---|---|---|
+| [Prompt injection](https://simonwillison.net/2022/Sep/12/prompt-injection/) | Untrusted text in the prompt makes the model follow the attacker instead of you. | Simon Willison, 2022 | Standard |
+| [Lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) | An agent with private data, untrusted content and a way to send data out can be tricked into leaking it. | Simon Willison, 2025 | Standard |
+| [Slopsquatting](https://socket.dev/blog/slopsquatting-how-ai-hallucinations-are-fueling-a-new-class-of-supply-chain-attacks) | Attackers register package names that models tend to hallucinate. | Seth Larson, 2025 | Emerging |
+| [Agent harness](https://www.langchain.com/blog/the-anatomy-of-an-agent-harness) | Everything around the model: tools, instructions, hooks, loop. "Agent = model + harness." | No single author | Standard |
+| [Harness engineering](https://mitchellh.com/writing/my-ai-adoption-journey) | Every time the agent makes a mistake, add a rule, tool or check so it can't happen again. | Mitchell Hashimoto, 2026 | Standard |
+| [Agent loop](https://simonwillison.net/2025/Sep/18/agents/) | A model running tools in a loop until a goal is met. | No single author | Standard |
+| [Hooks](https://code.claude.com/docs/en/hooks-guide) | Commands that run at fixed points in the agent's lifecycle. They are deterministic, so use them for rules that must always hold. | Claude Code | Standard |
+| [Guardrails](https://arxiv.org/abs/2310.10501) | Runtime checks around an AI app. Vague across vendors: name the mechanism when it matters. | NVIDIA NeMo, OpenAI and others | Standard |
+| [Sandboxing](https://anthropic.com/engineering/claude-code-sandboxing) | The agent runs inside fixed walls (files, network) so it can work freely without harm. | Security term; Anthropic, Willison for agents | Standard |
+| [Least privilege](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) | Give the agent only the access the task needs. | Saltzer, 1974; OWASP for agents | Standard |
+| [Human in the loop](https://www.hrw.org/report/2012/11/19/losing-humanity/case-against-killer-robots) | A person approves consequential actions before they happen. "On the loop": a person watches and can stop it. | Older term | Standard |
+| [Agents Rule of Two](https://ai.meta.com/blog/practical-ai-agent-security/) | In one session, an agent may have at most two of three: untrusted input, sensitive access, outside actions. | Meta, 2025 | Emerging |
+| [YOLO mode](https://simonwillison.net/2025/Sep/30/designing-agentic-loops/) | Everything approved by default. Every source says: only inside a sandbox. | Cursor feature name, 2024 | Emerging |
+| [Ralph loop](https://ghuntley.com/ralph/) | Feed the same prompt to a coding agent again and again. Each round does one task in a fresh context; progress lives in files and git. | Geoffrey Huntley, 2025 | Emerging |
+
+## The person using the agent
+
+| Term | What it means | Named by | How settled |
+|---|---|---|---|
+| [Vibe coding](https://en.wikipedia.org/wiki/Vibe_coding) | Accept everything, don't read the diffs, paste errors back and see what works. | Andrej Karpathy, 2025 | Standard |
+| [AI slop](https://simonwillison.net/2024/May/8/slop/) | Unreviewed AI output pushed on people who didn't ask for it. | Popularised by Simon Willison, 2024 | Standard |
+| [Automation bias](https://arxiv.org/html/2604.18948v1) | Trusting the machine's answer over better information you already have. | Aviation research, 1990s | Standard |
+| [Comprehension debt](https://codemanship.wordpress.com/2025/09/30/comprehension-debt-the-ticking-time-bomb-of-llm-generated-code/) | The team ships code faster than it can understand it. | Jason Gorman, 2025 | Emerging |
+| [Skill atrophy](https://addyo.substack.com/p/avoiding-skill-atrophy-in-the-age) | Skills fade because the thinking is always delegated. | Addy Osmani, 2025 | Emerging |
+| [Approval fatigue](https://anthropic.com/engineering/claude-code-sandboxing) | After many permission prompts, people stop reading what they approve. | Anthropic, 2025 | Emerging |
+| [70% problem](https://addyo.substack.com/p/the-70-problem-hard-truths-about) | AI gets non-engineers 70% of the way fast; the last 30% turns into diminishing returns. | Addy Osmani, 2024 | One source |
+| [Agentic engineering](https://addyosmani.com/blog/agentic-engineering/) | The professional version: the agent implements, the engineer owns architecture, quality and correctness. | Andrej Karpathy, 2026 | Emerging |
+
+## Where the experts disagree
+
+These are open questions. Know both sides before you pick one.
+
+- **Keep failed attempts in the context, or clear them?** Manus keeps errors in so the model learns from them. Anthropic says that after two failed corrections you should `/clear` and write a better prompt.
+- **Remove tools, or hide them?** Manus never adds or removes tools mid-task; it blocks the ones not allowed at decoding time. Tool loadout and Anthropic's tool search load fewer tools instead.
+- **Sub-agents, or one agent?** Anthropic recommends sub-agents to keep context clean. Cognition argues "Don't build multi-agents": keep one thread that sees the full history.
+- **Compact, or hand off?** Amp dropped compaction for handoffs in late 2025, then brought it back in 2026.
+
+## Words with more than one meaning
+
+- **Harness**: the agent harness (everything around the model), an eval harness, or a test harness. Say which.
+- **Plan mode**: a product mode (plan, approve, then edit), "plan-then-execute" (a security pattern), or LangChain's planner-and-executor agents.
+- **Hooks**: lifecycle scripts in Claude Code, event automations in Kiro, middleware in LangChain.
+- **Compaction**: usually summarising the chat. Manus uses it for swapping tool results for file pointers.
+- **Context confusion**: Breunig's meaning is too much irrelevant content, usually too many tools. It does not mean the agent mixing up which task it is on.
+
+## Slang you'll hear
+
+| You hear | What people mean | Say instead |
+|---|---|---|
+| "It got lobotomized" | Either the agent forgot your rules after auto-compaction, or a new model release feels dumber. | Context rot or context collapse for the first; name the release and the behaviour for the second. |
+| "Babysitting the agent" | Spending your time watching and correcting it instead of building. | Missing backpressure: add the checks that let it catch its own mistakes. |
+| "Boxing the agent" | AI boxing is an AI-safety idea about containing a superintelligence. It is not a prompting term. | Sandboxing, least privilege. |

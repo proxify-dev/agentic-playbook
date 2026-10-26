@@ -55,6 +55,7 @@
             "group": "Quick Reference",
             "pages": [
               "reference/common-pitfalls",
+              "reference/vocabulary",
               "reference/links"
             ]
           }

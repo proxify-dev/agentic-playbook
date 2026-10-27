@@ -137,11 +137,14 @@ Everything the agent knows when it acts sits in its context window. Most of the 
 |---|---|---|---|
 | [Vibe coding](https://en.wikipedia.org/wiki/Vibe_coding) | Accept everything, don't read the diffs, paste errors back and see what works. | Andrej Karpathy, 2025 | Standard |
 | [AI slop](https://simonwillison.net/2024/May/8/slop/) | Unreviewed AI output pushed on people who didn't ask for it. | Popularised by Simon Willison, 2024 | Standard |
+| [Meat proxy](https://gruhn.me/blog/2026-08-03/) | Passing the agent's answer to colleagues without reading it: "Claude said:" plus the paste, or a diff sent to review that you never read. The reviewers end up doing the engineering. | Frank Allenby, March 2026; made popular by Niklas Gruhn, August 2026 | Emerging |
 | [Automation bias](https://arxiv.org/html/2604.18948v1) | Trusting the machine's answer over better information you already have. | Aviation research, 1990s | Standard |
 | [Comprehension debt](https://codemanship.wordpress.com/2025/09/30/comprehension-debt-the-ticking-time-bomb-of-llm-generated-code/) | The team ships code faster than it can understand it. | Jason Gorman, 2025 | Emerging |
 | [Skill atrophy](https://addyo.substack.com/p/avoiding-skill-atrophy-in-the-age) | Skills fade because the thinking is always delegated. | Addy Osmani, 2025 | Emerging |
 | [Approval fatigue](https://anthropic.com/engineering/claude-code-sandboxing) | After many permission prompts, people stop reading what they approve. | Anthropic, 2025 | Emerging |
+| [Token maxxing](https://blog.pragmaticengineer.com/the-pulse-tokenmaxxing-as-a-weird-new-trend/) | Counting tokens burned as a measure of productivity, often on a leaderboard. People game it, and it repeats the old lines-of-code mistake. | No single author, 2026; Meta, Microsoft and Salesforce tracked it | Standard |
 | [70% problem](https://addyo.substack.com/p/the-70-problem-hard-truths-about) | AI gets non-engineers 70% of the way fast; the last 30% turns into diminishing returns. | Addy Osmani, 2024 | One source |
+| [Cognitive offloading](https://doi.org/10.1016/j.tics.2016.07.002) | Handing one piece of the thinking to a tool while you keep the decision, like a calculator or a reminder. Healthy in this sense; see below for the other one. | Risko and Gilbert, 2016 | Standard |
 | [Agentic engineering](https://addyosmani.com/blog/agentic-engineering/) | The professional version: the agent implements, the engineer owns architecture, quality and correctness. | Andrej Karpathy, 2026 | Emerging |
 
 ## Where the experts disagree
@@ -160,6 +163,7 @@ These are open questions. Know both sides before you pick one.
 - **Hooks**: lifecycle scripts in Claude Code, event automations in Kiro, middleware in LangChain.
 - **Compaction**: usually summarising the chat. Manus uses it for swapping tool results for file pointers.
 - **Context confusion**: Breunig's meaning is too much irrelevant content, usually too many tools. It does not mean the agent mixing up which task it is on.
+- **Cognitive offloading**: in psychology, handing a piece of thinking to a tool while you keep the decision. Many AI papers use it for letting the AI do the thinking, which Shaw and Nave (Wharton, 2026) call cognitive surrender. Neither is context offloading, which moves the agent's memory into files.
 
 ## Slang you'll hear
 

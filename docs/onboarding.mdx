@@ -1,6 +1,6 @@
 ---
-title: "Onboarding"
-description: "Set up your machine once, then orient fast on every new client project and get to your first contribution."
+title: "Client onboarding"
+description: "Set up your machine once, then orient fast on every new client engagement and get to your first contribution."
 ---
 
 Onboarding happens twice. Once on your machine, when you set up how you work with agents. Then again every time you join a new client, when you point that setup at their product and code.
@@ -45,11 +45,12 @@ Work in this order: the **product** first, then the **business** it serves, then
 
     ```text
     ~/acme/
-    ├── CLAUDE.md          who you are, the client, the repos, how you work here
-    ├── CLAUDE.local.md    yours only: notes, ideas, anything private
-    ├── frontend-repo/     a clean checkout of each repo, always on main
-    ├── backend-repo/
-    └── w/                 your worktrees, one per task
+    ├── CLAUDE.md              who you are, the client, the repos, how you work here
+    ├── CLAUDE.local.md        yours only: notes, ideas, anything private
+    ├── frontend-repo/         a clean checkout of each repo, always on main
+    │   └── .claude/worktrees/ your worktrees for this repo, one per task
+    └── backend-repo/
+        └── .claude/worktrees/
     ```
 
     Claude Code reads every `CLAUDE.md` in the folders above where you start it. So a session started in any repo or worktree under `~/acme` already knows who you are, who the client is and where everything lives, without you saying it again.
@@ -71,7 +72,7 @@ Work in this order: the **product** first, then the **business** it serves, then
 
     ## Worktrees
     ./frontend-repo and ./backend-repo stay on main and stay clean. Never develop in them.
-    New task: git -C ./backend-repo worktree add ./w/<task> -b <branch> origin/main
+    New task: git -C ./backend-repo worktree add .claude/worktrees/<task> -b <branch> origin/main
 
     ## Tools & access
     - Data: BigQuery, read-only. How to connect: the use-bigquery skill.
@@ -100,8 +101,8 @@ Work in this order: the **product** first, then the **business** it serves, then
     You get a map of the whole setup on day one, instead of after two weeks of clicking around. Save it in your client folder, and copy the repo list it finds into your `CLAUDE.md`.
   </Step>
 
-  <Step title="Get the skills this project needs">
-    Once you know the stack, look for skills built for it. Don't install everything. Install what this project needs.
+  <Step title="Get the skills this stack needs">
+    Once you know the stack, look for skills built for it. Don't install everything. Install what this stack needs.
 
     ```bash
     npx skills search <keyword>      # e.g. the framework, the cloud, the test runner
@@ -128,10 +129,16 @@ Work in this order: the **product** first, then the **business** it serves, then
   <Step title="Get ready to work in parallel">
     Sooner or later you'll want two or three agents on different tasks at the same time. Set up for that on day one, not on the day files start colliding.
 
-    **Keep one clean checkout and never develop in it.** It stays on `main`, and all you ever do there is `git pull`. Every task gets its own worktree, cut fresh from `main` into a folder next to it:
+    **Keep one clean checkout and never develop in it.** It stays on `main`, and all you ever do there is `git pull`. Every task gets its own worktree, cut fresh from `main` into the repo's `.claude/worktrees/` folder. That's where Claude Code puts worktrees itself, so yours and its own sit in one place:
 
     ```bash
-    git -C ~/acme/backend-repo worktree add ~/acme/w/<task> -b <branch> origin/main
+    git -C ~/acme/backend-repo worktree add .claude/worktrees/<task> -b <branch> origin/main
+    ```
+
+    So that folder never shows up as a change in the clean checkout, tell git to ignore it on your machine only, without touching the client's `.gitignore`:
+
+    ```bash
+    echo ".claude/worktrees/" >> ~/acme/backend-repo/.git/info/exclude
     ```
 
     The clean checkout is the point. Leave a side branch living in your main folder and it drifts for weeks until nobody can merge it. Keep `main` pristine and that can't happen.
@@ -140,7 +147,7 @@ Work in this order: the **product** first, then the **business** it serves, then
 
     **Plan for the running stack, not just the code.** Each worktree may need its own copy of the backend to test against. Before you go parallel, work out which services each worktree runs on its own, which ones they share, and which are too heavy to run more than once locally. Files git doesn't track, like `.env`, don't follow you into a new worktree, so plan how they get there.
 
-    For a quick one-off task, `claude --worktree` starts a session in its own worktree and cleans up after itself. [Parallel execution →](/patterns/parallel-execution/)
+    For a quick one-off task, `claude --worktree <name>` starts a session in its own worktree in that same folder and cleans up after itself. [Parallel execution →](/patterns/parallel-execution/)
   </Step>
 
   <Step title="Ship your first contribution">
